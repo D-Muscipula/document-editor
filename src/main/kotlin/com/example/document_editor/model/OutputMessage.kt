@@ -1,5 +1,5 @@
 package com.example.document_editor.model
 
-data class Greeting(
+data class OutputMessage(
     val content: String
 )
