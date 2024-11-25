@@ -14,6 +14,6 @@ class WebSocketsController {
     @Throws(Exception::class)
     fun greeting(message: Message): OutputMessage {
         println("is ok")
-        return OutputMessage(HtmlUtils.htmlEscape(message.name!!))
+        return OutputMessage(message.name)
     }
 }
