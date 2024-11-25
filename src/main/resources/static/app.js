@@ -19,12 +19,20 @@ stompClient.onConnect = (frame) => {
             console.log(delta);
             console.log(delta.content);
 
+            // Сохраняем текущую позицию курсора
+            const currentRange = quill.getSelection();
+
             // Помечаем, что сейчас выполняются программные изменения
             isChangingContentsProgrammatically = true;
             quill.setContents(delta.content);
 
             // После установки содержимого, сбрасываем флаг обратно
             isChangingContentsProgrammatically = false;
+
+            // Восстанавливаем позицию курсора, если она была изначально
+            if (currentRange) {
+                quill.setSelection(currentRange.index, currentRange.length);
+            }
         } catch (e) {
             console.error("Invalid delta received: ", e);
         }
