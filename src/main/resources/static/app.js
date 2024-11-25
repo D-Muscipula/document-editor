@@ -41,7 +41,7 @@ function sendName() {
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    $("#display").text(message).show();
 }
 
 $(document).ready(function() {
