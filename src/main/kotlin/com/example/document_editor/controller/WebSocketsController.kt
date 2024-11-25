@@ -14,7 +14,6 @@ class WebSocketsController {
     @Throws(Exception::class)
     fun greeting(message: Message): OutputMessage {
         println("is ok")
-        Thread.sleep(1000) // simulated delay
         return OutputMessage("Hello, " + HtmlUtils.htmlEscape(message.name!!) + "!")
     }
 }
