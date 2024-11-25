@@ -33,10 +33,10 @@ function connect() {
     stompClient.activate();
 }
 
-function sendName() {
+function sendTextUpdate(text) {
     stompClient.publish({
         destination: "/app/hello",
-        body: JSON.stringify({'name': $("#name").val()})
+        body: JSON.stringify({'name': text})
     });
 }
 
@@ -47,5 +47,9 @@ function showGreeting(message) {
 $(document).ready(function() {
     $("form").on('submit', (e) => e.preventDefault());
     connect();
-    $("#send").click(() => sendName());
+
+    // Отправлять обновления при каждом изменении текста
+    $("#name").on('input', function() {
+        sendTextUpdate($(this).val());
+    });
 });
