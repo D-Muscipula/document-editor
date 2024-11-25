@@ -20,12 +20,10 @@ stompClient.onStompError = (frame) => {
 };
 
 function setConnected(connected) {
-    $("#connect").prop("disabled", connected);
-    $("#disconnect").prop("disabled", !connected);
+    $("#send").prop("disabled", !connected);
     if (connected) {
         $("#conversation").show();
-    }
-    else {
+    } else {
         $("#conversation").hide();
     }
     $("#greetings").html("");
@@ -33,12 +31,6 @@ function setConnected(connected) {
 
 function connect() {
     stompClient.activate();
-}
-
-function disconnect() {
-    stompClient.deactivate();
-    setConnected(false);
-    console.log("Disconnected");
 }
 
 function sendName() {
@@ -52,9 +44,8 @@ function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
-$(function () {
+$(document).ready(function() {
     $("form").on('submit', (e) => e.preventDefault());
-    $( "#connect" ).click(() => connect());
-    $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendName());
+    connect();
+    $("#send").click(() => sendName());
 });
