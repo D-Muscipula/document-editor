@@ -20,13 +20,12 @@ stompClient.onStompError = (frame) => {
 };
 
 function setConnected(connected) {
-    $("#send").prop("disabled", !connected);
+    $("#editor").prop("disabled", !connected);
     if (connected) {
-        $("#conversation").show();
+        $("#editor").show();
     } else {
-        $("#conversation").hide();
+        $("#editor").hide();
     }
-    $("#greetings").html("");
 }
 
 function connect() {
@@ -40,15 +39,15 @@ function sendTextUpdate(text) {
     });
 }
 
-function showGreeting(message) {
-    $("#display").text(message).show();
+function showGreeting(content) {
+    $("#editor").val(content);
 }
 
 $(document).ready(function() {
     connect();
-    $("form").on('submit', (e) => e.preventDefault());
+
     // Отправлять обновления при каждом изменении текста
-    $("#name").on('input', function() {
+    $("#editor").on('input', function() {
         sendTextUpdate($(this).val());
     });
 });
