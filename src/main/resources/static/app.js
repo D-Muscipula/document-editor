@@ -45,9 +45,8 @@ function showGreeting(message) {
 }
 
 $(document).ready(function() {
-    $("form").on('submit', (e) => e.preventDefault());
     connect();
-
+    $("form").on('submit', (e) => e.preventDefault());
     // Отправлять обновления при каждом изменении текста
     $("#name").on('input', function() {
         sendTextUpdate($(this).val());
