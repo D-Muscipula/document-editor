@@ -13,6 +13,6 @@ class WebSocketsController {
     @Throws(Exception::class)
     fun delta(message: Message): OutputMessage {
         println("is ok")
-        return OutputMessage(message.name)
+        return OutputMessage(message.delta)
     }
 }

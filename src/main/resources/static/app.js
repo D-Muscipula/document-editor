@@ -13,12 +13,8 @@ stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/deltas', (update) => {
         try {
-            console.log(update);
             var delta = JSON.parse(update.body);
-            console.log('delta: ');
-            console.log(delta);
-            console.log(delta.content);
-
+            console.log('delta received by client: ', delta.content);
             // Сохраняем текущую позицию курсора
             const currentRange = quill.getSelection();
 
@@ -45,11 +41,10 @@ function connect() {
 
 function sendTextUpdate() {
     var content = quill.getContents();
-    console.log(content);
-    console.log(JSON.stringify(content));
+    console.log('sending text update to server: ', JSON.stringify(content));
     stompClient.publish({
         destination: "/app/update",
-        body: JSON.stringify({'name': content})
+        body: JSON.stringify({'delta': content})
     });
 }
 
