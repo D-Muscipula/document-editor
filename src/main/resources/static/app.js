@@ -11,7 +11,7 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', (update) => {
+    stompClient.subscribe('/topic/deltas', (update) => {
         try {
             console.log(update);
             var delta = JSON.parse(update.body);

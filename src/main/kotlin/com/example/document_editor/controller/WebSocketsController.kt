@@ -10,7 +10,7 @@ import org.springframework.web.util.HtmlUtils
 @Controller
 class WebSocketsController {
     @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @SendTo("/topic/deltas")
     @Throws(Exception::class)
     fun greeting(message: Message): OutputMessage {
         println("is ok")
