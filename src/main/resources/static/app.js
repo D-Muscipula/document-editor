@@ -48,7 +48,7 @@ function sendTextUpdate() {
     console.log(content);
     console.log(JSON.stringify(content));
     stompClient.publish({
-        destination: "/app/hello",
+        destination: "/app/update",
         body: JSON.stringify({'name': content})
     });
 }
