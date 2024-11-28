@@ -53,10 +53,17 @@ let isChangingContentsProgrammatically = false;
 
 $(document).ready(function() {
     connect();
+
     quill.on('text-change', function() {
-        // Вызываем sendTextUpdate только если изменения сделаны пользователем
         if (!isChangingContentsProgrammatically) {
             sendTextUpdate();
+        }
+    });
+
+    // Закрываем WebSocket соединение перед уходом пользователя со страницы
+    window.addEventListener('beforeunload', function() {
+        if (stompClient.active) {
+            stompClient.deactivate();
         }
     });
 });
