@@ -1,45 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Realtime Quill Editor</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link href="/main.css" rel="stylesheet">
-
-  <!-- Стили для Quill -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Document</title>
+  <style>
+    /* Немного стилей для оформления */
+    form {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    label {
+      margin-top: 10px;
+      display: block;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 <body>
-<noscript>
-  <h2 style="color: #ff0000">
-    Your browser doesn't support Javascript! Websocket relies on Javascript being enabled.
-    Please enable Javascript and reload this page!
-  </h2>
-</noscript>
-<div id="main-content" class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div id="toolbar">
-        <select class="ql-header">
-          <option value="1">Header 1</option>
-          <option value="2">Header 2</option>
-          <option selected>Normal</option>
-        </select>
-        <button class="ql-bold">Bold</button>
-        <button class="ql-italic">Italic</button>
-        <button class="ql-underline">Underline</button>
-        <button class="ql-image">Image</button>
-        <button class="ql-code-block">Code</button>
-      </div>
-      <!-- Контейнер для редактора Quill -->
-      <div id="editor-container" style="height: 400px;"></div>
-    </div>
-  </div>
-</div>
 
-<!-- Скрипты для Quill и других библиотек -->
-<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-<script src="app.js"></script> <!-- Подключаем файл с JavaScript кодом -->
+<form id="document-form">
+  <h2>Create Document</h2>
+  <label for="title">Title:</label>
+  <input type="text" id="title" name="title" required>
+  <button type="submit">Create</button>
+</form>
+
+<script>
+  document.getElementById('document-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // предотвращаем стандартное поведение формы
+
+      const title = document.getElementById('title').value;
+
+      // Формирование URL с title в качестве части пути
+      const url = `/api/documents/${encodeURIComponent(title)}`;
+
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.id) {
+              // Используем window.location.origin для получения базового URL (https://host:port)
+              const documentUrl = `${window.location.origin}/api/documents/${encodeURIComponent(data.title)}/${data.id}`;
+              alert(`Document created successfully! View it here: ${documentUrl}`);
+              document.getElementById('document-form').reset();
+          } else {
+              alert('Failed to create document. Please try again.');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+      });
+  });
+</script>
+
 </body>
 </html>

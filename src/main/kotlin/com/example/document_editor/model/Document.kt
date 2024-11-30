@@ -9,19 +9,18 @@ import java.util.UUID
 data class Document(
 
     @Id
-    @GeneratedValue
     val id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
     var title: String,
 
-    @Column(nullable = false)
+    @Column
     val creationDate: LocalDateTime = LocalDateTime.now(),
 
     @Column
-    var lastModifiedDate: LocalDateTime = creationDate // Инициализация датой создания
+    var lastModifiedDate: LocalDateTime = creationDate
 ) {
-    // Сеттер для title обновляет и дату последнего редактирования
+
     fun updateTitle(newTitle: String) {
         this.title = newTitle
         this.lastModifiedDate = LocalDateTime.now()

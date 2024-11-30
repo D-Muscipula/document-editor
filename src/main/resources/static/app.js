@@ -11,7 +11,7 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/deltas', (update) => {
+    stompClient.subscribe('/topic/deltas/asdf/123', (update) => {
         try {
             var delta = JSON.parse(update.body);
             console.log('delta received by client: ', delta.content);
@@ -43,7 +43,7 @@ function sendTextUpdate() {
     var content = quill.getContents();
     console.log('sending text update to server: ', JSON.stringify(content));
     stompClient.publish({
-        destination: "/app/update",
+        destination: "/app/update/asdf/123",
         body: JSON.stringify({'delta': content})
     });
 }
