@@ -22,6 +22,13 @@
       padding: 10px;
       margin-top: 5px;
     }
+    #link-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .copy-button {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -32,6 +39,8 @@
   <input type="text" id="title" name="title" required>
   <button type="submit">Create</button>
 </form>
+
+<div id="link-container"></div>
 
 <script>
   document.getElementById('document-form').addEventListener('submit', function(event) {
@@ -53,7 +62,35 @@
           if (data.id) {
               // Используем window.location.origin для получения базового URL (https://host:port)
               const documentUrl = `${window.location.origin}/api/documents/${encodeURIComponent(data.title)}/${data.id}`;
-              alert(`Document created successfully! View it here: ${documentUrl}`);
+
+              // Создаем и отображаем ссылку
+              const linkContainer = document.getElementById('link-container');
+              linkContainer.innerHTML = ''; // очищаем контейнер
+
+              const link = document.createElement('a');
+              link.href = documentUrl;
+              link.textContent = "View Document";
+              link.target = '_blank'; // для открытия в новой вкладке
+              linkContainer.appendChild(link);
+
+              const urlText = document.createElement('p');
+              urlText.textContent = documentUrl;
+              linkContainer.appendChild(urlText);
+
+              // Добавляем кнопку для копирования ссылки
+              const copyButton = document.createElement('button');
+              copyButton.textContent = 'Copy Link';
+              copyButton.className = 'copy-button';
+              linkContainer.appendChild(copyButton);
+
+              copyButton.addEventListener('click', () => {
+                  navigator.clipboard.writeText(documentUrl).then(() => {
+                      alert('Link copied to clipboard');
+                  }, (error) => {
+                      console.error('Failed to copy: ', error);
+                  });
+              });
+
               document.getElementById('document-form').reset();
           } else {
               alert('Failed to create document. Please try again.');
