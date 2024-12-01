@@ -39,25 +39,31 @@ class WebSocketsController(private val documentService: DocumentService) {
         // Преобразование объекта в строку JSON
         val jsonString: String = objectMapper.writeValueAsString(message)
         val documentFromDb = documentService.findByIdAndTitle(UUID.fromString(uuid), title)
-        if (documentFromDb?.contentDelta == null) {
-            val messages = Messages()
-            messages.messages.add(message)
-            val jsonStr: String = objectMapper.writeValueAsString(messages)
-            val document = Document(id = UUID.fromString(uuid),
+
+        val document = Document(id = UUID.fromString(uuid),
                 title = title,
-                contentDelta = jsonStr)
+                contentDelta = jsonString)
             documentService.saveDocument(document)
-        } else {
-            val messages: Messages = objectMapper.readValue(documentFromDb.contentDelta!!)
-            messages.messages.add(message)
-            val jsonStr: String = objectMapper.writeValueAsString(messages)
-            val document = Document(
-                id = UUID.fromString(uuid),
-                title = title,
-                contentDelta = jsonStr
-            )
-            documentService.saveDocument(document)
-        }
+
+//        if (documentFromDb?.contentDelta == null) {
+//            val messages = Messages()
+//            messages.messages.add(message)
+//            val jsonStr: String = objectMapper.writeValueAsString(messages)
+//            val document = Document(id = UUID.fromString(uuid),
+//                title = title,
+//                contentDelta = jsonStr)
+//            documentService.saveDocument(document)
+//        } else {
+//            val messages: Messages = objectMapper.readValue(documentFromDb.contentDelta!!)
+//            messages.messages.add(message)
+//            val jsonStr: String = objectMapper.writeValueAsString(messages)
+//            val document = Document(
+//                id = UUID.fromString(uuid),
+//                title = title,
+//                contentDelta = jsonStr
+//            )
+//            documentService.saveDocument(document)
+//        }
         return OutputMessage(message.delta)
     }
 

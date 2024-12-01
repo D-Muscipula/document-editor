@@ -12,7 +12,6 @@ const stompClient = new StompJs.Client({
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
 
-    // Fetch initial document state from your API
     fetch(`/document/${title}/${uuid}`)
         .then(response => {
             if (!response.ok) {
@@ -23,25 +22,25 @@ stompClient.onConnect = (frame) => {
         .then(data => {
             console.log('Received data object:', data);
 
-            let messages = [];
             if (data.contentDelta) {
                 try {
-                    const parsedContent = JSON.parse(data.contentDelta); // Парсим строку JSON
-                    messages = parsedContent.messages || [];
+                    const parsedDelta = JSON.parse(data.contentDelta);
+
+                    if (parsedDelta.delta) {
+                        console.log('Applying delta:', parsedDelta.delta);
+                        quill.updateContents(parsedDelta.delta);
+
+                        // Устанавливаем курсор в конец текста после обновления
+                        const length = quill.getLength(); // Получаем длину содержимого
+                        quill.setSelection(length, 0);    // Перемещаем курсор в конец
+                    } else {
+                        console.error('No delta found in parsed contentDelta');
+                    }
                 } catch (error) {
                     console.error('Error parsing contentDelta:', error);
                 }
-            }
-
-            if (Array.isArray(messages)) {
-                messages.forEach(msg => {
-                    console.log('Processing message:', msg);
-                    if (msg.delta) {
-                        quill.updateContents(msg.delta);
-                    }
-                });
             } else {
-                console.error('Messages is not an array:', messages);
+                console.error('No contentDelta found in received data');
             }
         })
         .catch(error => console.error('Failed to load initial document:', error));
@@ -50,10 +49,12 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe(`/topic/deltas/${title}/${uuid}`, (update) => {
         try {
             var delta = JSON.parse(update.body);
-            console.log('Delta received by client:', delta);
+            console.log('delta received by client: ', delta.content);
+            // Сохраняем текущую позицию курсора
             const currentRange = quill.getSelection();
+            console.log(uuid);
             isChangingContentsProgrammatically = true;
-            quill.updateContents(delta.delta); // Access delta.delta
+            quill.setContents(delta.content);
             isChangingContentsProgrammatically = false;
             if (currentRange) {
                 quill.setSelection(currentRange.index, currentRange.length);
@@ -72,7 +73,7 @@ function sendTextUpdate() {
     var content = quill.getContents();
     console.log('Sending text update to server:', JSON.stringify(content));
     stompClient.publish({
-        destination: `/app/update/${title}/${uuid}`,  // Corrected quoting
+        destination: `/app/update/${title}/${uuid}`,  // Исправлено использование кавычек
         body: JSON.stringify({'delta': content})
     });
 }
