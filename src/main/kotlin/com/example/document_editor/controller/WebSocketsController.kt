@@ -13,10 +13,10 @@ import java.util.*
 
 @Controller
 class WebSocketsController {
-    @MessageMapping("/update/{document-name}/{uuid}")
-    @SendTo("/topic/deltas/{document-name}/{uuid}")
+    @MessageMapping("/update/{title}/{uuid}")
+    @SendTo("/topic/deltas/{title}/{uuid}")
     @Throws(Exception::class)
-    fun delta(@Payload message: Message, @DestinationVariable uuid: String): OutputMessage {
+    fun delta(@Payload message: Message, @DestinationVariable title: String, @DestinationVariable uuid: String): OutputMessage {
         println("uuid: $uuid")
         return OutputMessage(message.delta)
     }

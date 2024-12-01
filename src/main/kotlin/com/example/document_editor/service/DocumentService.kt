@@ -23,6 +23,10 @@ class DocumentService(private val documentRepository: DocumentRepository) {
         return documentRepository.save(document)
     }
 
+    fun saveDocument(document: Document) {
+        documentRepository.save(document)
+    }
+
     fun deleteById(id: UUID) = documentRepository.deleteById(id)
 
     fun existsById(id: UUID): Boolean = documentRepository.existsById(id)
