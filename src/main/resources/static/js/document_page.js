@@ -11,21 +11,50 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
+
+    // Fetch initial document state from your API
+    fetch(`/document/${title}/${uuid}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Received data object:', data);
+
+            let messages = [];
+            if (data.contentDelta) {
+                try {
+                    const parsedContent = JSON.parse(data.contentDelta); // Парсим строку JSON
+                    messages = parsedContent.messages || [];
+                } catch (error) {
+                    console.error('Error parsing contentDelta:', error);
+                }
+            }
+
+            if (Array.isArray(messages)) {
+                messages.forEach(msg => {
+                    console.log('Processing message:', msg);
+                    if (msg.delta) {
+                        quill.updateContents(msg.delta);
+                    }
+                });
+            } else {
+                console.error('Messages is not an array:', messages);
+            }
+        })
+        .catch(error => console.error('Failed to load initial document:', error));
+
+    // Subscribe to WebSocket updates
     stompClient.subscribe(`/topic/deltas/${title}/${uuid}`, (update) => {
         try {
             var delta = JSON.parse(update.body);
-            console.log('delta received by client: ', delta.content);
-            // Сохраняем текущую позицию курсора
+            console.log('Delta received by client:', delta);
             const currentRange = quill.getSelection();
-            console.log(uuid);
-            // Помечаем, что сейчас выполняются программные изменения
             isChangingContentsProgrammatically = true;
-            quill.setContents(delta.content);
-
-            // После установки содержимого, сбрасываем флаг обратно
+            quill.updateContents(delta.delta); // Access delta.delta
             isChangingContentsProgrammatically = false;
-
-            // Восстанавливаем позицию курсора, если она была изначально
             if (currentRange) {
                 quill.setSelection(currentRange.index, currentRange.length);
             }
@@ -41,14 +70,13 @@ function connect() {
 
 function sendTextUpdate() {
     var content = quill.getContents();
-    console.log('sending text update to server: ', JSON.stringify(content));
+    console.log('Sending text update to server:', JSON.stringify(content));
     stompClient.publish({
-        destination: `/app/update/${title}/${uuid}`,
+        destination: `/app/update/${title}/${uuid}`,  // Corrected quoting
         body: JSON.stringify({'delta': content})
     });
 }
 
-// Флаг для отслеживания программных изменений
 let isChangingContentsProgrammatically = false;
 
 $(document).ready(function() {
@@ -60,7 +88,6 @@ $(document).ready(function() {
         }
     });
 
-    // Закрываем WebSocket соединение перед уходом пользователя со страницы
     window.addEventListener('beforeunload', function() {
         if (stompClient.active) {
             stompClient.deactivate();

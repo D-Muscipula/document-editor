@@ -33,6 +33,7 @@ class DocumentController @Autowired constructor(
         }
     }
 
+
     @PostMapping("/{title}")
     fun createDocument(@PathVariable title: String): ResponseEntity<Document> {
         val createdDocument = documentService.save(title)
