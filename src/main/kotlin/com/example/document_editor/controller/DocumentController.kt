@@ -39,21 +39,6 @@ class DocumentController @Autowired constructor(
         return ResponseEntity.ok(createdDocument)
     }
 
-//    @PutMapping("/{id}")
-//    fun updateDocument(
-//        @PathVariable id: UUID,
-//        @RequestBody updatedDocument: Document
-//    ): ResponseEntity<Document> {
-//        val document = documentService.findById(id)
-//        return if (document != null) {
-//            document.updateTitle(updatedDocument.title)
-//            val savedDocument = documentService.save(document)
-//            ResponseEntity.ok(savedDocument)
-//        } else {
-//            ResponseEntity.notFound().build()
-//        }
-//    }
-
     @DeleteMapping("/{id}")
     fun deleteDocument(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (documentService.existsById(id)) {
