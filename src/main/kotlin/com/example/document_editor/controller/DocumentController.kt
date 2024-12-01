@@ -24,13 +24,13 @@ class DocumentController @Autowired constructor(
     @GetMapping("/{title}/{id}")
     fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID, model: Model): String {
         val document = documentService.findByIdAndTitle(id, title)
-        model.addAttribute("document", document)
-        return "document.html"
-//        return if (document != null) {
-//            ResponseEntity.ok(document)
-//        } else {
-//            ResponseEntity.notFound().build()
-//        }
+        return if (document != null) {
+            model.addAttribute("document", document)
+            "document.html"
+        } else {
+            model.addAttribute("errorMessage", "Document not found")
+            "document-not-found.html"
+        }
     }
 
     @PostMapping("/{title}")
