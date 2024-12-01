@@ -19,10 +19,4 @@ data class Document(
 
     @Column
     var lastModifiedDate: LocalDateTime = creationDate
-) {
-
-    fun updateTitle(newTitle: String) {
-        this.title = newTitle
-        this.lastModifiedDate = LocalDateTime.now()
-    }
-}
+)
