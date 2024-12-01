@@ -5,6 +5,7 @@ import com.example.document_editor.service.DocumentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -21,8 +22,9 @@ class DocumentController @Autowired constructor(
     }
 
     @GetMapping("/{title}/{id}")
-    fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID): String {
+    fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID, model: Model): String {
         val document = documentService.findByIdAndTitle(id, title)
+        model.addAttribute("document", document)
         return "document.html"
 //        return if (document != null) {
 //            ResponseEntity.ok(document)

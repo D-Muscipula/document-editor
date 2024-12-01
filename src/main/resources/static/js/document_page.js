@@ -11,13 +11,13 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/deltas/asdf/7ce94c37-694c-4386-b676-6e4d4f3c0fd7', (update) => {
+    stompClient.subscribe(`/topic/deltas/${title}/${uuid}`, (update) => {
         try {
             var delta = JSON.parse(update.body);
             console.log('delta received by client: ', delta.content);
             // Сохраняем текущую позицию курсора
             const currentRange = quill.getSelection();
-
+            console.log(uuid);
             // Помечаем, что сейчас выполняются программные изменения
             isChangingContentsProgrammatically = true;
             quill.setContents(delta.content);
@@ -43,7 +43,7 @@ function sendTextUpdate() {
     var content = quill.getContents();
     console.log('sending text update to server: ', JSON.stringify(content));
     stompClient.publish({
-        destination: "/app/update/asdf/7ce94c37-694c-4386-b676-6e4d4f3c0fd7",
+        destination: `/app/update/${title}/${uuid}`,
         body: JSON.stringify({'delta': content})
     });
 }
