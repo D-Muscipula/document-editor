@@ -4,10 +4,11 @@ import com.example.document_editor.model.Document
 import com.example.document_editor.service.DocumentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
-@RestController
+@Controller
 @RequestMapping("/api/documents")
 class DocumentController @Autowired constructor(
     private val documentService: DocumentService
@@ -20,13 +21,14 @@ class DocumentController @Autowired constructor(
     }
 
     @GetMapping("/{title}/{id}")
-    fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID): ResponseEntity<Document> {
+    fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID): String {
         val document = documentService.findByIdAndTitle(id, title)
-        return if (document != null) {
-            ResponseEntity.ok(document)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+        return "document.html"
+//        return if (document != null) {
+//            ResponseEntity.ok(document)
+//        } else {
+//            ResponseEntity.notFound().build()
+//        }
     }
 
     @PostMapping("/{title}")

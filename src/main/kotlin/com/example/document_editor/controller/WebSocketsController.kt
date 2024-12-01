@@ -30,7 +30,7 @@ class WebSocketsController {
         model.addAttribute("uuid", myUUID)
         model.addAttribute("name", myName)
 
-        return "index.html"
+        return "document.html"
     }
 
 }
