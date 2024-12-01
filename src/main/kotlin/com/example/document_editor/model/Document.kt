@@ -1,5 +1,7 @@
 package com.example.document_editor.model
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType
+import org.hibernate.annotations.Type
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.UUID
@@ -18,5 +20,9 @@ data class Document(
     val creationDate: LocalDateTime = LocalDateTime.now(),
 
     @Column
-    var lastModifiedDate: LocalDateTime = creationDate
+    var lastModifiedDate: LocalDateTime = creationDate,
+
+    @Type(JsonBinaryType::class)
+    @Column(columnDefinition = "jsonb")
+    var contentDelta: String? = null
 )

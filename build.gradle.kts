@@ -27,6 +27,12 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+// https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-60
+	// https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63
+	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.0")
+
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
+
 	runtimeOnly("org.postgresql:postgresql")
 
 	//temp
