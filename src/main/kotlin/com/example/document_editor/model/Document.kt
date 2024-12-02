@@ -1,10 +1,13 @@
 package com.example.document_editor.model
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Type
-import jakarta.persistence.*
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "documents")
