@@ -1,9 +1,8 @@
 document.getElementById('document-form').addEventListener('submit', function(event) {
-      event.preventDefault(); // предотвращаем стандартное поведение формы
+      event.preventDefault();
 
       const title = document.getElementById('title').value;
 
-      // Формирование URL с title в качестве части пути
       const url = `/api/documents/${encodeURIComponent(title)}`;
 
       fetch(url, {
@@ -15,24 +14,22 @@ document.getElementById('document-form').addEventListener('submit', function(eve
       .then(response => response.json())
       .then(data => {
           if (data.id) {
-              // Используем window.location.origin для получения базового URL (https://host:port)
               const documentUrl = `${window.location.origin}/api/documents/${encodeURIComponent(data.title)}/${data.id}`;
 
-              // Создаем и отображаем ссылку
+
               const linkContainer = document.getElementById('link-container');
-              linkContainer.innerHTML = ''; // очищаем контейнер
+              linkContainer.innerHTML = '';
 
               const link = document.createElement('a');
               link.href = documentUrl;
               link.textContent = "View Document";
-              link.target = '_blank'; // для открытия в новой вкладке
+              link.target = '_blank';
               linkContainer.appendChild(link);
 
               const urlText = document.createElement('p');
               urlText.textContent = documentUrl;
               linkContainer.appendChild(urlText);
 
-              // Добавляем кнопку для копирования ссылки
               const copyButton = document.createElement('button');
               copyButton.textContent = 'Copy Link';
               copyButton.className = 'copy-button';

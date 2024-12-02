@@ -15,12 +15,6 @@ class DocumentController @Autowired constructor(
     private val documentService: DocumentService
 ) {
 
-    @GetMapping
-    fun getAllDocuments(): ResponseEntity<List<Document>> {
-        val documents = documentService.findAll()
-        return ResponseEntity.ok(documents)
-    }
-
     @GetMapping("/{title}/{id}")
     fun getDocumentByTitleAndId(@PathVariable title: String, @PathVariable id: UUID, model: Model): String {
         val document = documentService.findByIdAndTitle(id, title)
@@ -38,15 +32,5 @@ class DocumentController @Autowired constructor(
     fun createDocument(@PathVariable title: String): ResponseEntity<Document> {
         val createdDocument = documentService.save(title)
         return ResponseEntity.ok(createdDocument)
-    }
-
-    @DeleteMapping("/{id}")
-    fun deleteDocument(@PathVariable id: UUID): ResponseEntity<Void> {
-        return if (documentService.existsById(id)) {
-            documentService.deleteById(id)
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.notFound().build()
-        }
     }
 }

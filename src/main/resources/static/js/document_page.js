@@ -8,10 +8,8 @@ var quill = new Quill('#editor-container', {
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/editor-websocket'
 });
-
 stompClient.onConnect = (frame) => {
     console.log('Connected: ' + frame);
-
     fetch(`/document/${title}/${uuid}`)
         .then(response => {
             if (!response.ok) {
@@ -30,9 +28,8 @@ stompClient.onConnect = (frame) => {
                         console.log('Applying delta:', parsedDelta.delta);
                         quill.updateContents(parsedDelta.delta);
 
-                        // Устанавливаем курсор в конец текста после обновления
-                        const length = quill.getLength(); // Получаем длину содержимого
-                        quill.setSelection(length, 0);    // Перемещаем курсор в конец
+                        const length = quill.getLength();
+                        quill.setSelection(length, 0);
                     } else {
                         console.error('No delta found in parsed contentDelta');
                     }
@@ -45,12 +42,11 @@ stompClient.onConnect = (frame) => {
         })
         .catch(error => console.error('Failed to load initial document:', error));
 
-    // Subscribe to WebSocket updates
+
     stompClient.subscribe(`/topic/deltas/${title}/${uuid}`, (update) => {
         try {
             var delta = JSON.parse(update.body);
             console.log('delta received by client: ', delta.content);
-            // Сохраняем текущую позицию курсора
             const currentRange = quill.getSelection();
             console.log(uuid);
             isChangingContentsProgrammatically = true;
@@ -73,13 +69,12 @@ function sendTextUpdate() {
     var content = quill.getContents();
     console.log('Sending text update to server:', JSON.stringify(content));
     stompClient.publish({
-        destination: `/app/update/${title}/${uuid}`,  // Исправлено использование кавычек
+        destination: `/app/update/${title}/${uuid}`,
         body: JSON.stringify({'delta': content})
     });
 }
 
 let isChangingContentsProgrammatically = false;
-
 $(document).ready(function() {
     connect();
 
@@ -88,7 +83,6 @@ $(document).ready(function() {
             sendTextUpdate();
         }
     });
-
     window.addEventListener('beforeunload', function() {
         if (stompClient.active) {
             stompClient.deactivate();
